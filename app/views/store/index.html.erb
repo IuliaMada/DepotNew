@@ -1,7 +1,9 @@
 <p id="notice"><%= notice %></p>
 
 <h1>Your Pragmatic Catalog</h1>
-
+<% if session[:counter] > 5 %>
+	<p>Store was accessed : <%= pluralize( session[:counter], 'time' ) %> </p>
+<% end %>	
 
 <% cache @products do %>
 	<% @products.each do |product| %>
