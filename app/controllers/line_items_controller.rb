@@ -28,11 +28,11 @@ class LineItemsController < ApplicationController
   # POST /line_items.json
   def create
     product = Product.find(params[:product_id])
-    @line_item = @cart.line_items.build(product: product)
+    @line_item =  @cart.add_product(product)
 
     respond_to do |format|
       if @line_item.save
-        format.html { redirect_to @line_item.cart, notice: 'Line item was successfully created.' }
+        format.html { redirect_to @line_item.cart }
         format.json { render :show, status: :created, location: @line_item }
         session[:counter] = 0
       else
@@ -59,9 +59,15 @@ class LineItemsController < ApplicationController
   # DELETE /line_items/1
   # DELETE /line_items/1.json
   def destroy
-    @line_item.destroy
+    #daca sunt mai multe line itesm sa faca update la quantiti numa altfel sa stearga toata linia
+    if @line_item.quantity > 1
+        @line_item.update( quantity: (@line_item.quantity -  1) )
+    else  
+         @line_item.destroy 
+    end  
+   
     respond_to do |format|
-      format.html { redirect_to line_items_url, notice: 'Line item was successfully destroyed.' }
+      format.html { redirect_to @line_item.cart, notice: 'Line item was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -74,6 +80,6 @@ class LineItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def line_item_params
-      params.require(:line_item).permit(:product_id, :cart_id)
+      params.require(:line_item).permit(:product_id)
     end
 end
