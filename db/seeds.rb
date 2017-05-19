@@ -21,7 +21,8 @@ Product.create([
 			out which cross-platform solution makes the most sense for your needs.
 			</p>},
 		image_url: '7apps.jpg',
-		price: 26.00},
+		price: 26.00
+	},
 	{
 		title: 'Another awesome boook about ruby/rails',
 		description:
@@ -34,7 +35,11 @@ Product.create([
 			out which cross-platform solution makes the most sense for your needs.
 			</p>},
 		image_url: 'adrpo.jpg',
-		price: 15.00 }
-		])
+		price: 15.00
+	}
+])
+
+PaymentType.create([{name: "Check"}, {name: "Credit card"}, {name: "Purchase order"}])
 
 # . . .
+
