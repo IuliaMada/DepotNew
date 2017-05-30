@@ -26,8 +26,14 @@
     <%= f.email_field :email, size: 40 %>
   </div>
 
+   <div class="field">
+    <%= f.label :ship_date %>
+    <%= f.text_field :ship_date, size: 40 %>
+  </div>
+
   <div class="field">
-      <%= f.select :payment_types, options_for_select( PaymentType.all.collect {|p| [ p.name, p.id ] }) %>
+    <%= f.label :Payment_type %>
+      <%= f.select :payment_type, options_for_select( PaymentType.all.collect {|p| [ p.name, p.id ] }) %>
   </div>
 
   <div class="actions">

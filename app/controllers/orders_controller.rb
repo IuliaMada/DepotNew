@@ -1,6 +1,7 @@
 class OrdersController < ApplicationController
   include CurrentCart
 
+  before_action :set_params, only: [:update, :create]
   before_action :set_cart, only: [:new, :create]
   before_action :ensure_cart_isnt_empty, only: :new
   before_action :set_order, only: [:show, :edit, :update, :destroy]
@@ -35,6 +36,7 @@ class OrdersController < ApplicationController
       if @order.save
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
+        OrderMailer.received(@order).deliver_later
         format.html { redirect_to store_index_url, notice:
           'Thank you for your order.' }
         format.json { render :show, status: :created, location: @order }
@@ -50,7 +52,11 @@ class OrdersController < ApplicationController
   def update
     respond_to do |format|
       if @order.update(order_params)
-        format.html { redirect_to @order, notice: 'Order was successfully updated.' }
+        if @user.ship_date_changed?
+          format.html { redirect_to @order, notice: 'The order was shipped.' }
+        else
+          format.html { redirect_to @order, notice: 'Order was successfully updated.' }
+        end
         format.json { render :show, status: :ok, location: @order }
       else
         format.html { render :edit }
@@ -78,6 +84,10 @@ class OrdersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
       params.require(:order).permit(:name, :address, :email, :payment_type_id)
+    end
+
+    def set_params
+      params[:order][:payment_type_id] = params[:order].delete :payment_type
     end
 
     def ensure_cart_isnt_empty

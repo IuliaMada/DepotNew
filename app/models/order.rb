@@ -1,8 +1,8 @@
 class Order < ApplicationRecord
 
-	binding.pry
+	# binding.pry
   has_many :line_items, dependent: :destroy
-  belongs_to :payment_types
+  belongs_to :payment_type
 
 	validates :name, :address, :email, presence: true
 

@@ -4,7 +4,7 @@ class CreateOrders < ActiveRecord::Migration[5.0]
       t.string :name
       t.text :address
       t.string :email
-      t.integer :pay_type
+      t.references :payment_type, foreign_key: true
 
       t.timestamps
     end
