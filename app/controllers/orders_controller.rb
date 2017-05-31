@@ -1,6 +1,8 @@
 class OrdersController < ApplicationController
   include CurrentCart
 
+ rescue_from ActiveRecord::RecordNotFound, :with => :error_email
+
   before_action :set_params, only: [:update, :create]
   before_action :set_cart, only: [:new, :create]
   before_action :ensure_cart_isnt_empty, only: :new
@@ -52,7 +54,8 @@ class OrdersController < ApplicationController
   def update
     respond_to do |format|
       if @order.update(order_params)
-        if @user.ship_date_changed?
+
+        if order_params[:ship_date]
           format.html { redirect_to @order, notice: 'The order was shipped.' }
         else
           format.html { redirect_to @order, notice: 'Order was successfully updated.' }
@@ -83,7 +86,7 @@ class OrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
-      params.require(:order).permit(:name, :address, :email, :payment_type_id)
+      params.require(:order).permit(:name, :address, :email, :payment_type_id, :ship_date)
     end
 
     def set_params
@@ -94,5 +97,10 @@ class OrdersController < ApplicationController
       if @cart.line_items.empty?
         redirect_to store_index_url, notice: 'Your cart is empty'
       end
+    end
+
+    def error_email
+      OrderMailer.error_emails.deliver_later
+      redirect_to orders_path, notice: 'Order not found'
     end
 end

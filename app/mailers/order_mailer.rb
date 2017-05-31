@@ -23,4 +23,8 @@ default from: 'Depot Store'
 
     mail to: order.email, subject: 'Pragmatic Store Order Shipped'
   end
+
+  def error_emails
+    mail to: 'manager@yahoo.com', subject: 'Order not found'
+  end
 end
