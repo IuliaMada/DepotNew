@@ -3,6 +3,7 @@ class OrdersController < ApplicationController
 
  rescue_from ActiveRecord::RecordNotFound, :with => :error_email
 
+  skip_before_action :authorize, only: [:new, :create]
   before_action :set_params, only: [:update, :create]
   before_action :set_cart, only: [:new, :create]
   before_action :ensure_cart_isnt_empty, only: :new

@@ -1,5 +1,7 @@
 class StoreController < ApplicationController
 	include CurrentCart
+
+  skip_before_action :authorize
 	before_action :set_cart
 
   def index
@@ -8,7 +10,7 @@ class StoreController < ApplicationController
   	else
   		session[:counter] += 1
   	end
-  	 	
+
   	@products = Product.order(:title)
   end
 end
